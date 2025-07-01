@@ -1,8 +1,7 @@
-package lk.ijse.supermarketfx.dao;
+package lk.ijse.supermarketfx.dao.custom;
 
-import lk.ijse.supermarketfx.entity.Customer;
-
-import java.util.ArrayList;
+import lk.ijse.supermarketfx.dao.CrudDAO;
+import lk.ijse.supermarketfx.entity.OrderDetail;
 
 /**
  * --------------------------------------------
@@ -10,10 +9,10 @@ import java.util.ArrayList;
  * GitHub: https://github.com/shamodhas
  * Website: https://shamodha.com
  * --------------------------------------------
- * Created: 7/1/2025 10:50 AM
+ * Created: 7/1/2025 1:01 PM
  * Project: Supermarket-layered
  * --------------------------------------------
  **/
 
-public interface CustomerDAO extends CrudDAO<Customer>  {
+public interface OrderDetailsDAO extends CrudDAO<OrderDetail> {
 }

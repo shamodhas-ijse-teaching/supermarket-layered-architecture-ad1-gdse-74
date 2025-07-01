@@ -1,6 +1,6 @@
-package lk.ijse.supermarketfx.dao.impl;
+package lk.ijse.supermarketfx.dao.custom.impl;
 
-import lk.ijse.supermarketfx.dao.CustomerDAO;
+import lk.ijse.supermarketfx.dao.custom.CustomerDAO;
 import lk.ijse.supermarketfx.entity.Customer;
 
 import java.util.List;
@@ -52,5 +52,10 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public Optional<Customer> findById(String id) {
         return Optional.empty();
+    }
+
+    @Override
+    public List<Customer> search(String text) {
+        return List.of();
     }
 }

@@ -1,6 +1,7 @@
-package lk.ijse.supermarketfx.dao;
+package lk.ijse.supermarketfx.dao.custom;
 
-import lk.ijse.supermarketfx.entity.Item;
+import lk.ijse.supermarketfx.dao.CrudDAO;
+import lk.ijse.supermarketfx.entity.Order;
 
 /**
  * --------------------------------------------
@@ -8,10 +9,10 @@ import lk.ijse.supermarketfx.entity.Item;
  * GitHub: https://github.com/shamodhas
  * Website: https://shamodha.com
  * --------------------------------------------
- * Created: 7/1/2025 11:14 AM
+ * Created: 7/1/2025 12:44 PM
  * Project: Supermarket-layered
  * --------------------------------------------
  **/
 
-public interface ItemDAO extends CrudDAO<Item> {
+public interface OrderDAO extends CrudDAO<Order> {
 }
