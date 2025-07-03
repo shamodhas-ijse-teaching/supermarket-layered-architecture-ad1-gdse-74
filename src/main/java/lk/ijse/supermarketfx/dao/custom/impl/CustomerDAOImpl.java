@@ -45,13 +45,13 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public String getNextId() throws SQLException {
         ResultSet resultSet = SQLUtil.execute("SELECT customer_id FROM customer ORDER BY customer_id DESC LIMIT 1");
-        char tableChar = 'C'; // Use any character Ex:- customer table for C, item table for I
+        char tableChar = 'C';
         if (resultSet.next()) {
-            String lastId = resultSet.getString(1); // "C004"
-            String lastIdNumberString = lastId.substring(1); // "004"
-            int lastIdNumber = Integer.parseInt(lastIdNumberString); // 4
-            int nextIdNumber = lastIdNumber + 1; // 5
-            String nextIdString = String.format(tableChar + "%03d", nextIdNumber); // "C005"
+            String lastId = resultSet.getString(1);
+            String lastIdNumberString = lastId.substring(1);
+            int lastIdNumber = Integer.parseInt(lastIdNumberString);
+            int nextIdNumber = lastIdNumber + 1;
+            String nextIdString = String.format(tableChar + "%03d", nextIdNumber);
             return nextIdString;
         }
         return tableChar + "001";
