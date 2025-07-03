@@ -3,6 +3,7 @@ package lk.ijse.supermarketfx.dao.custom;
 import lk.ijse.supermarketfx.dao.CrudDAO;
 import lk.ijse.supermarketfx.entity.Customer;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -17,5 +18,5 @@ import java.util.List;
  **/
 
 public interface CustomerDAO extends CrudDAO<Customer> {
-    List<Customer> search(String text);
+    List<Customer> search(String text) throws SQLException;
 }
