@@ -1,8 +1,14 @@
 package lk.ijse.supermarketfx.dao.custom.impl;
 
+import lk.ijse.supermarketfx.dao.SQLUtil;
 import lk.ijse.supermarketfx.dao.custom.CustomerDAO;
+import lk.ijse.supermarketfx.dto.CustomerDTO;
 import lk.ijse.supermarketfx.entity.Customer;
+import lk.ijse.supermarketfx.util.CrudUtil;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +26,22 @@ import java.util.Optional;
 public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
-    public List<Customer> getAll() {
-        return List.of();
+    public List<Customer> getAll() throws SQLException {
+        ResultSet resultSet = SQLUtil.execute("select * from customer");
+
+        List<Customer> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Customer customer = new Customer(
+                    resultSet.getString(1),
+                    resultSet.getString(2),
+                    resultSet.getString(3),
+                    resultSet.getString(4),
+                    resultSet.getString(5)
+            );
+            list.add(customer);
+        }
+
+        return list;
     }
 
     @Override

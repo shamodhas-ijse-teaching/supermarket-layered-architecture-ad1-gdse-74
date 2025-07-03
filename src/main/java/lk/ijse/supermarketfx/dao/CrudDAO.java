@@ -2,6 +2,7 @@ package lk.ijse.supermarketfx.dao;
 
 import lk.ijse.supermarketfx.entity.Customer;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +18,10 @@ import java.util.Optional;
  * --------------------------------------------
  **/
 
-public interface CrudDAO<T> {
-    List<T> getAll();
+public interface CrudDAO<T> extends SuperDAO {
+    List<T> getAll() throws SQLException;
 
-    String getNextId();
+    String getNextId() ;
 
     boolean save(T t);
 

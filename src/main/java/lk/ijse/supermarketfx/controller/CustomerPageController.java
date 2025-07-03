@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.db.DBConnection;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
 import lk.ijse.supermarketfx.dto.tm.CustomerTM;
@@ -226,6 +227,8 @@ public class CustomerPageController implements Initializable {
         if (isValidName && isValidNic && isValidEmail && isValidPhone) {
             try {
                 boolean isSave = customerModel.saveCustomer(customerDTO);
+
+                // Business -> DAO
                 if (isSave) {
 //                    loadNextId();
 //                    loadTableData();
