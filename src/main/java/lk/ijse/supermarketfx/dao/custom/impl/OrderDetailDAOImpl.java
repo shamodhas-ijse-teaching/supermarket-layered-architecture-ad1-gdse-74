@@ -1,8 +1,10 @@
 package lk.ijse.supermarketfx.dao.custom.impl;
 
+import lk.ijse.supermarketfx.dao.SQLUtil;
 import lk.ijse.supermarketfx.dao.custom.OrderDetailsDAO;
 import lk.ijse.supermarketfx.entity.OrderDetail;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +31,14 @@ public class OrderDetailDAOImpl implements OrderDetailsDAO {
     }
 
     @Override
-    public boolean save(OrderDetail orderDetail) {
-        return false;
+    public boolean save(OrderDetail orderDetail) throws SQLException {
+        return SQLUtil.execute(
+                "insert into order_details values (?,?,?,?)",
+                orderDetail.getOrderId(),
+                orderDetail.getItemId(),
+                orderDetail.getQuantity(),
+                orderDetail.getPrice()
+        );
     }
 
     @Override

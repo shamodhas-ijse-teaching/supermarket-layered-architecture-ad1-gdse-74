@@ -1,8 +1,12 @@
 package lk.ijse.supermarketfx.dao.custom.impl;
 
+import lk.ijse.supermarketfx.dao.SQLUtil;
 import lk.ijse.supermarketfx.dao.custom.OrderDAO;
 import lk.ijse.supermarketfx.entity.Order;
+import lk.ijse.supermarketfx.util.CrudUtil;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +28,29 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public String getNextId() {
-        return "";
+    public String getNextId() throws SQLException {
+        ResultSet resultSet = CrudUtil.execute(
+                "select order_id from orders order by order_id desc limit 1"
+        );
+        char tableChar = 'O';
+        if (resultSet.next()) {
+            String lastId = resultSet.getString(1);
+            String lastIdNUmberString = lastId.substring(1);
+            int lastIdNumber = Integer.parseInt(lastIdNUmberString);
+            int nextIdNumber = lastIdNumber + 1;
+            String nextIdString = String.format(tableChar + "%03d", nextIdNumber);
+            return nextIdString;
+        }
+        return tableChar + "001";
     }
 
     @Override
-    public boolean save(Order order) {
-        return false;
+    public boolean save(Order order) throws SQLException {
+        return SQLUtil.execute("insert into orders values (?,?,?)",
+                order.getId(),
+                order.getCustomerId(),
+                order.getOrderDate()
+        );
     }
 
     @Override
