@@ -7,6 +7,7 @@ import lk.ijse.supermarketfx.util.CrudUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,19 @@ import java.util.Optional;
 
 public class OrderDAOImpl implements OrderDAO {
     @Override
-    public List<Order> getAll() {
-        return List.of();
+    public List<Order> getAll() throws SQLException {
+        List<Order> list = new ArrayList<>();
+
+        ResultSet rs = SQLUtil.execute("SELECT * FROM orders");
+        while (rs.next()) {
+            list.add(new Order(
+                    rs.getString(1),
+                    rs.getString(2),
+                    rs.getDate(3)
+            ));
+        }
+
+        return list;
     }
 
     @Override

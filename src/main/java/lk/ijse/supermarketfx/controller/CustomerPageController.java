@@ -14,6 +14,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import lk.ijse.supermarketfx.bo.BOFactory;
+import lk.ijse.supermarketfx.bo.BOTypes;
+import lk.ijse.supermarketfx.bo.SuperBO;
+import lk.ijse.supermarketfx.bo.custom.CustomerBO;
+import lk.ijse.supermarketfx.bo.custom.impl.CustomerBOImpl;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.db.DBConnection;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
@@ -51,6 +56,8 @@ public class CustomerPageController implements Initializable {
     public TextField txtPhone;
 
     private final CustomerModel customerModel = new CustomerModel();
+    private final CustomerBO customerBO = BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
+
 
     // TM - table model Ex: CustomerTM
     public TableView<CustomerTM> tblCustomer;
@@ -72,6 +79,10 @@ public class CustomerPageController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+//        CustomerBO bo = (CustomerBO) BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
+//        bo.getAllCustomer();
+
+
         // table column and tm class properties link
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -143,8 +154,21 @@ public class CustomerPageController implements Initializable {
 //                        )
 //        ).toList();
 
+
+//        MVC
+//        tblCustomer.setItems(FXCollections.observableArrayList(
+//                customerModel.getAllCustomer().stream().map(customerDTO ->
+//                        new CustomerTM(
+//                                customerDTO.getCustomerId(),
+//                                customerDTO.getName(),
+//                                customerDTO.getNic(),
+//                                customerDTO.getEmail(),
+//                                customerDTO.getPhone()
+//                        )).toList()
+//        ));
+
         tblCustomer.setItems(FXCollections.observableArrayList(
-                customerModel.getAllCustomer().stream().map(customerDTO ->
+                customerBO.getAllCustomer().stream().map(customerDTO ->
                         new CustomerTM(
                                 customerDTO.getCustomerId(),
                                 customerDTO.getName(),
@@ -153,6 +177,7 @@ public class CustomerPageController implements Initializable {
                                 customerDTO.getPhone()
                         )).toList()
         ));
+
 
     }
 

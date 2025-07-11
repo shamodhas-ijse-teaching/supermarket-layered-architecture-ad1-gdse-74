@@ -37,12 +37,13 @@ public class AppInitializer extends Application {
         // Boy Girl Agreement
         // Agreement = Girl
 //        SuperDAO dao = new OrderDAOImpl();
-        DAOFactory daoFactory = DAOFactory.getInstance();
-        daoFactory.getDAO(DAOTypes.CUSTOMER);
+//        DAOFactory daoFactory = DAOFactory.getInstance();
+//        daoFactory.getDAO(DAOTypes.CUSTOMER);
+//
+//        CustomerDAO customerDAO = DAOFactory.getInstance().getDAO(DAOTypes.CUSTOMER);
+//        OrderDAO orderDAO = DAOFactory.getInstance().getDAO(DAOTypes.ORDER);
 
-        CustomerDAO customerDAO = DAOFactory.getInstance().getDAO(DAOTypes.CUSTOMER);
-        OrderDAO orderDAO = DAOFactory.getInstance().getDAO(DAOTypes.ORDER);
-
+        launch(args);
     }
 
     @Override
