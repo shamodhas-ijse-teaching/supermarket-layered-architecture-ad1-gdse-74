@@ -21,6 +21,7 @@ import lk.ijse.supermarketfx.bo.custom.CustomerBO;
 import lk.ijse.supermarketfx.bo.custom.impl.CustomerBOImpl;
 import lk.ijse.supermarketfx.bo.exception.DuplicateException;
 import lk.ijse.supermarketfx.bo.exception.InUseException;
+import lk.ijse.supermarketfx.bo.exception.NotFoundException;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.db.DBConnection;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
@@ -392,18 +393,14 @@ public class CustomerPageController implements Initializable {
 
         if (isValidName && isValidNic && isValidEmail && isValidPhone) {
             try {
-                boolean isUpdate = customerModel.updateCustomer(customerDTO);
-                if (isUpdate) {
-                    resetPage();
+                customerBO.updateCustomer(customerDTO);
 
-                    new Alert(
-                            Alert.AlertType.INFORMATION, "Customer update successfully..!"
-                    ).show();
-                } else {
-                    new Alert(
-                            Alert.AlertType.ERROR, "Fail to update customer..!"
-                    ).show();
-                }
+                resetPage();
+                new Alert(
+                        Alert.AlertType.INFORMATION, "Customer update successfully..!"
+                ).show();
+            } catch (NotFoundException | DuplicateException e) {
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             } catch (Exception e) {
                 e.printStackTrace();
                 new Alert(

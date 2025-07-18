@@ -4,6 +4,7 @@ import lk.ijse.supermarketfx.bo.custom.CustomerBO;
 import lk.ijse.supermarketfx.bo.exception.DuplicateException;
 import lk.ijse.supermarketfx.bo.exception.InUseException;
 import lk.ijse.supermarketfx.bo.exception.NotFoundException;
+import lk.ijse.supermarketfx.bo.util.EntityDTOConverter;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.dao.DAOTypes;
 import lk.ijse.supermarketfx.dao.custom.CustomerDAO;
@@ -32,20 +33,21 @@ public class CustomerBOImpl implements CustomerBO {
 
     private final CustomerDAO customerDAO = DAOFactory.getInstance().getDAO(DAOTypes.CUSTOMER);
     private final OrderDAO orderDAO = DAOFactory.getInstance().getDAO(DAOTypes.ORDER);
+    private final EntityDTOConverter converter = new EntityDTOConverter();
 
     @Override
     public List<CustomerDTO> getAllCustomer() throws SQLException {
         List<Customer> customers = customerDAO.getAll();
         List<CustomerDTO> customerDTOS = new ArrayList<>();
         for (Customer customer : customers) {
-            CustomerDTO customerDTO = new CustomerDTO(
-                    customer.getId(),
-                    customer.getName(),
-                    customer.getNic(),
-                    customer.getEmail(),
-                    customer.getPhone()
-            );
-            customerDTOS.add(customerDTO);
+//            CustomerDTO customerDTO = new CustomerDTO(
+//                    customer.getId(),
+//                    customer.getName(),
+//                    customer.getNic(),
+//                    customer.getEmail(),
+//                    customer.getPhone()
+//            );
+            customerDTOS.add(converter.getCustomerDTO(customer));
         }
         return customerDTOS;
     }
@@ -73,27 +75,45 @@ public class CustomerBOImpl implements CustomerBO {
             throw new DuplicateException("Duplicate customer phone number");
         }
 
-        Customer customer = new Customer();
-
-        customer.setId(dto.getCustomerId());
-        customer.setNic(dto.getNic());
-        customer.setName(dto.getName());
-        customer.setEmail(dto.getEmail());
-        customer.setPhone(dto.getPhone());
+        Customer customer = converter.getCustomer(dto);
+//        customer.setEmail("hello");
 
         boolean save = customerDAO.save(customer);
     }
 
+//    private Customer customerDtoTOEntity(){
+//
+//    }
+
+    @Override
+    public void updateCustomer(CustomerDTO dto) throws SQLException {
+        Optional<Customer> optionalCustomer = customerDAO.findById(dto.getCustomerId());
+        if (optionalCustomer.isEmpty()) {
+            throw new NotFoundException("Customer not found");
+        }
+
+        Optional<Customer> customerByNicOptional = customerDAO.findCustomerByNic(dto.getNic());
+        if (customerByNicOptional.isPresent()) {
+            Customer customer = customerByNicOptional.get();
+
+            if (customer.getId() != dto.getCustomerId()) {
+                throw new DuplicateException("Duplicate nic");
+            }
+        }
+
+        Customer customer = converter.getCustomer(dto);
+        customerDAO.update(customer);
+    }
+
     @Override
     public boolean deleteCustomer(String id) throws InUseException, Exception {
-//        id
         Optional<Customer> optionalCustomer = customerDAO.findById(id);
         if (optionalCustomer.isEmpty()) {
             throw new NotFoundException("Customer not found..!");
         }
 
         // customer have orders ?
-        if (orderDAO.existOrdersByCustomerId(id)){
+        if (orderDAO.existOrdersByCustomerId(id)) {
             throw new InUseException("Customer has orders");
         }
 
@@ -104,4 +124,5 @@ public class CustomerBOImpl implements CustomerBO {
         }
         return true;
     }
+
 }

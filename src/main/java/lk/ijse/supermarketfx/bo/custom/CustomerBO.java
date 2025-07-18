@@ -24,5 +24,7 @@ public interface CustomerBO extends SuperBO {
 
     void saveCustomer(CustomerDTO dto) throws DuplicateException, Exception;
 
+    void updateCustomer(CustomerDTO dto) throws SQLException;
+
     boolean deleteCustomer(String id) throws InUseException, Exception;
 }
