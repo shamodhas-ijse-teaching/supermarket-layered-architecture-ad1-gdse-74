@@ -20,6 +20,7 @@ import lk.ijse.supermarketfx.bo.SuperBO;
 import lk.ijse.supermarketfx.bo.custom.CustomerBO;
 import lk.ijse.supermarketfx.bo.custom.impl.CustomerBOImpl;
 import lk.ijse.supermarketfx.bo.exception.DuplicateException;
+import lk.ijse.supermarketfx.bo.exception.InUseException;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.db.DBConnection;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
@@ -324,8 +325,8 @@ public class CustomerPageController implements Initializable {
         if (response.isPresent() && response.get() == ButtonType.YES) {
             try {
                 String customerId = lblId.getText();
-                boolean isDeleted = customerModel.deleteCustomer(customerId);
-
+//                boolean isDeleted = customerModel.deleteCustomer(customerId);
+                boolean isDeleted = customerBO.deleteCustomer(customerId);
 
                 if (isDeleted) {
                     resetPage();
@@ -336,6 +337,8 @@ public class CustomerPageController implements Initializable {
                     new Alert(Alert.AlertType.ERROR, "Fail to delete customer.").show();
 
                 }
+            } catch (InUseException e) {
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             } catch (Exception e) {
                 e.printStackTrace();
                 new Alert(

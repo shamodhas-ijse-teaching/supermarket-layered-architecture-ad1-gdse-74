@@ -2,9 +2,12 @@ package lk.ijse.supermarketfx.bo.custom.impl;
 
 import lk.ijse.supermarketfx.bo.custom.CustomerBO;
 import lk.ijse.supermarketfx.bo.exception.DuplicateException;
+import lk.ijse.supermarketfx.bo.exception.InUseException;
+import lk.ijse.supermarketfx.bo.exception.NotFoundException;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.dao.DAOTypes;
 import lk.ijse.supermarketfx.dao.custom.CustomerDAO;
+import lk.ijse.supermarketfx.dao.custom.OrderDAO;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
 import lk.ijse.supermarketfx.entity.Customer;
 
@@ -26,7 +29,9 @@ import java.util.Optional;
 
 // model mapper
 public class CustomerBOImpl implements CustomerBO {
+
     private final CustomerDAO customerDAO = DAOFactory.getInstance().getDAO(DAOTypes.CUSTOMER);
+    private final OrderDAO orderDAO = DAOFactory.getInstance().getDAO(DAOTypes.ORDER);
 
     @Override
     public List<CustomerDTO> getAllCustomer() throws SQLException {
@@ -77,5 +82,26 @@ public class CustomerBOImpl implements CustomerBO {
         customer.setPhone(dto.getPhone());
 
         boolean save = customerDAO.save(customer);
+    }
+
+    @Override
+    public boolean deleteCustomer(String id) throws InUseException, Exception {
+//        id
+        Optional<Customer> optionalCustomer = customerDAO.findById(id);
+        if (optionalCustomer.isEmpty()) {
+            throw new NotFoundException("Customer not found..!");
+        }
+
+        // customer have orders ?
+        if (orderDAO.existOrdersByCustomerId(id)){
+            throw new InUseException("Customer has orders");
+        }
+
+        try {
+            boolean delete = customerDAO.delete(id);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

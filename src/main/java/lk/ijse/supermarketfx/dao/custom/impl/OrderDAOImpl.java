@@ -84,4 +84,10 @@ public class OrderDAOImpl implements OrderDAO {
     public Optional<Order> findById(String id) {
         return Optional.empty();
     }
+
+    @Override
+    public boolean existOrdersByCustomerId(String customerId) throws SQLException {
+        ResultSet resultSet = SQLUtil.execute("SELECT * FROM orders WHERE customer_id = ?", customerId);
+        return resultSet.next();
+    }
 }
