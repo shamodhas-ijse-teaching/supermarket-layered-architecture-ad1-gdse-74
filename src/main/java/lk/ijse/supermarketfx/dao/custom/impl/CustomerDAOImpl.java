@@ -133,4 +133,30 @@ public class CustomerDAOImpl implements CustomerDAO {
         }
         return list;
     }
+
+    @Override
+    public Optional<Customer> findCustomerByNic(String nic) throws SQLException {
+        ResultSet resultSet = SQLUtil.execute("SELECT * FROM customer WHERE nic = ?", nic);
+        if (resultSet.next()) {
+            return Optional.of(new Customer(
+                    resultSet.getString(1),
+                    resultSet.getString(2),
+                    resultSet.getString(3),
+                    resultSet.getString(4),
+                    resultSet.getString(5)
+            ));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsCustomerByPhoneNumber(String phoneNumber) throws SQLException {
+        ResultSet resultSet = SQLUtil.execute("SELECT * FROM customer WHERE phone = ?", phoneNumber);
+//        if (resultSet.next()){
+//            return true;
+//        }
+//        return false;
+
+        return resultSet.next();
+    }
 }

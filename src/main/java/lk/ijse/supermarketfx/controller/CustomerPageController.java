@@ -19,6 +19,7 @@ import lk.ijse.supermarketfx.bo.BOTypes;
 import lk.ijse.supermarketfx.bo.SuperBO;
 import lk.ijse.supermarketfx.bo.custom.CustomerBO;
 import lk.ijse.supermarketfx.bo.custom.impl.CustomerBOImpl;
+import lk.ijse.supermarketfx.bo.exception.DuplicateException;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.db.DBConnection;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
@@ -81,7 +82,6 @@ public class CustomerPageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 //        CustomerBO bo = (CustomerBO) BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
 //        bo.getAllCustomer();
-
 
         // table column and tm class properties link
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -251,24 +251,29 @@ public class CustomerPageController implements Initializable {
 //        CustomerModel customerModel = new CustomerModel();
         if (isValidName && isValidNic && isValidEmail && isValidPhone) {
             try {
-                boolean isSave = customerModel.saveCustomer(customerDTO);
+//                boolean isSave = customerModel.saveCustomer(customerDTO);
+                customerBO.saveCustomer(customerDTO);
 
                 // Business -> DAO
-                if (isSave) {
+//                if (isSave) {
 //                    loadNextId();
 //                    loadTableData();
-                    resetPage();
-
-                    new Alert(
-                            Alert.AlertType.INFORMATION, "Customer saved successfully..!"
-                    ).show();
-                } else {
-                    new Alert(
-                            Alert.AlertType.ERROR, "Fail to save customer..!"
-                    ).show();
-                }
+                resetPage();
+                new Alert(
+                        Alert.AlertType.INFORMATION, "Customer saved successfully..!"
+                ).show();
+//                } else {
+//                    new Alert(
+//                            Alert.AlertType.ERROR, "Fail to save customer..!"
+//                    ).show();
+//                }
+            } catch (DuplicateException e) {
+                System.out.println(e.getMessage());
+//                e.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             } catch (Exception e) {
                 e.printStackTrace();
+//                e.getMessage();
                 new Alert(
                         Alert.AlertType.ERROR, "Fail to save customer..!"
                 ).show();
@@ -304,8 +309,6 @@ public class CustomerPageController implements Initializable {
             btnUpdate.setDisable(false);
             btnDelete.setDisable(false);
         }
-
-
     }
 
     public void btnDeleteOnAction(ActionEvent actionEvent) {
@@ -323,6 +326,7 @@ public class CustomerPageController implements Initializable {
                 String customerId = lblId.getText();
                 boolean isDeleted = customerModel.deleteCustomer(customerId);
 
+
                 if (isDeleted) {
                     resetPage();
                     new Alert(
@@ -332,7 +336,6 @@ public class CustomerPageController implements Initializable {
                     new Alert(Alert.AlertType.ERROR, "Fail to delete customer.").show();
 
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 new Alert(
@@ -357,7 +360,6 @@ public class CustomerPageController implements Initializable {
         boolean isValidNic = nic.matches(nicPattern);
         boolean isValidEmail = email.matches(emailPattern);
         boolean isValidPhone = phone.matches(phonePattern);
-
 
         txtName.setStyle(txtName.getStyle() + ";-fx-border-color: #BB25B9;");
         txtNic.setStyle(txtNic.getStyle() + ";-fx-border-color: #BB25B9;");
