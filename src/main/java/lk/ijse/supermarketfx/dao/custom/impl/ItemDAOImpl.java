@@ -1,8 +1,10 @@
 package lk.ijse.supermarketfx.dao.custom.impl;
 
+import lk.ijse.supermarketfx.dao.SQLUtil;
 import lk.ijse.supermarketfx.dao.custom.ItemDAO;
 import lk.ijse.supermarketfx.entity.Item;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +56,11 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public boolean reduceQuantity(String id, int qty) {
-        return false;
+    public boolean reduceQuantity(String id, int qty) throws SQLException {
+        return SQLUtil.execute(
+                "update item set quantity = quantity - ? where item_id = ?",
+                qty,
+                id
+        );
     }
 }

@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lk.ijse.supermarketfx.bo.BOFactory;
+import lk.ijse.supermarketfx.bo.BOTypes;
+import lk.ijse.supermarketfx.bo.custom.PlaceOrderBO;
 import lk.ijse.supermarketfx.dto.ItemDTO;
 import lk.ijse.supermarketfx.dto.OrderDTO;
 import lk.ijse.supermarketfx.dto.OrderDetailsDTO;
@@ -86,6 +89,9 @@ public class OrderPageController implements Initializable {
     private TextField txtAddToCartQty;
 
     private final OrderModel orderModel = new OrderModel();
+
+    private final PlaceOrderBO placeOrderBO = BOFactory.getInstance().getBO(BOTypes.PLACE_ORDER);
+
     private final CustomerModel customerModel = new CustomerModel();
     private final ItemModel itemModel = new ItemModel();
 
@@ -133,6 +139,7 @@ public class OrderPageController implements Initializable {
 
     private void loadCustomerIds() throws SQLException {
         ArrayList<String> customerIdsList = customerModel.getAllCustomerIds();
+//        call bo layer and request getAllCustomerIds()
         ObservableList<String> customerIds = FXCollections.observableArrayList();
         customerIds.addAll(customerIdsList);
         cmbCustomerId.setItems(customerIds);
@@ -266,7 +273,9 @@ public class OrderPageController implements Initializable {
         );
 
         try {
-            boolean isPlaced = orderModel.placeOrder(orderDTO);
+//            boolean isPlaced = orderModel.placeOrder(orderDTO);
+            boolean isPlaced = placeOrderBO.placeOrder(orderDTO);
+            // call bo and place order
 
             if (isPlaced) {
                 resetPage();

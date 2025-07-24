@@ -1,6 +1,7 @@
 package lk.ijse.supermarketfx.bo.custom;
 
 import lk.ijse.supermarketfx.bo.SuperBO;
+import lk.ijse.supermarketfx.dto.OrderDTO;
 
 /**
  * --------------------------------------------
@@ -14,4 +15,5 @@ import lk.ijse.supermarketfx.bo.SuperBO;
  **/
 
 public interface PlaceOrderBO extends SuperBO {
+    boolean placeOrder(OrderDTO dto);
 }
