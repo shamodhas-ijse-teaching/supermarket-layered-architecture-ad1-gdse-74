@@ -3,6 +3,8 @@ package lk.ijse.supermarketfx.bo.custom;
 import lk.ijse.supermarketfx.bo.SuperBO;
 import lk.ijse.supermarketfx.dto.OrderDTO;
 
+import java.sql.SQLException;
+
 /**
  * --------------------------------------------
  * Author: Shamodha Sahan
@@ -15,5 +17,5 @@ import lk.ijse.supermarketfx.dto.OrderDTO;
  **/
 
 public interface PlaceOrderBO extends SuperBO {
-    boolean placeOrder(OrderDTO dto);
+    boolean placeOrder(OrderDTO dto) throws SQLException;
 }
