@@ -7,11 +7,13 @@ import lk.ijse.supermarketfx.bo.exception.NotFoundException;
 import lk.ijse.supermarketfx.bo.util.EntityDTOConverter;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.dao.DAOTypes;
+import lk.ijse.supermarketfx.dao.SQLUtil;
 import lk.ijse.supermarketfx.dao.custom.CustomerDAO;
 import lk.ijse.supermarketfx.dao.custom.OrderDAO;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
 import lk.ijse.supermarketfx.entity.Customer;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,4 +127,16 @@ public class CustomerBOImpl implements CustomerBO {
         return true;
     }
 
+    @Override
+    public String getNextId() throws SQLException {
+        String lastId = customerDAO.getLastId();
+        char tableChar = 'C';
+        if (lastId != null) {
+            String lastIdNumberString = lastId.substring(1);
+            int lastIdNumber = Integer.parseInt(lastIdNumberString);
+            int nextIdNumber = lastIdNumber + 1;
+            return String.format(tableChar + "%03d", nextIdNumber);
+        }
+        return tableChar + "001";
+    }
 }

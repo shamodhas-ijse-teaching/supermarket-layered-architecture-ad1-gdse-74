@@ -21,7 +21,7 @@ import java.util.Optional;
 public interface CrudDAO<T> extends SuperDAO {
     List<T> getAll() throws SQLException;
 
-    String getNextId() throws SQLException;
+    String getLastId() throws SQLException;
 
     boolean save(T t) throws SQLException;
 

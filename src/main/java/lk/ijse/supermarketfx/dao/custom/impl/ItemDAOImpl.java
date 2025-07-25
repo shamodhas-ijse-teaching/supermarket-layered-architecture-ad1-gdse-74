@@ -26,7 +26,7 @@ public class ItemDAOImpl implements ItemDAO {
     }
 
     @Override
-    public String getNextId() {
+    public String getLastId() {
         return "";
     }
 

@@ -1,7 +1,6 @@
 package lk.ijse.supermarketfx.controller;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,21 +15,15 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import lk.ijse.supermarketfx.bo.BOFactory;
 import lk.ijse.supermarketfx.bo.BOTypes;
-import lk.ijse.supermarketfx.bo.SuperBO;
 import lk.ijse.supermarketfx.bo.custom.CustomerBO;
-import lk.ijse.supermarketfx.bo.custom.impl.CustomerBOImpl;
 import lk.ijse.supermarketfx.bo.exception.DuplicateException;
 import lk.ijse.supermarketfx.bo.exception.InUseException;
 import lk.ijse.supermarketfx.bo.exception.NotFoundException;
-import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.db.DBConnection;
 import lk.ijse.supermarketfx.dto.CustomerDTO;
 import lk.ijse.supermarketfx.dto.tm.CustomerTM;
 import lk.ijse.supermarketfx.model.CustomerModel;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.net.URL;
@@ -38,7 +31,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * --------------------------------------------
@@ -58,9 +50,8 @@ public class CustomerPageController implements Initializable {
     public TextField txtEmail;
     public TextField txtPhone;
 
-    private final CustomerModel customerModel = new CustomerModel();
+    //    private final CustomerModel customerModel = new CustomerModel();
     private final CustomerBO customerBO = BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
-
 
     // TM - table model Ex: CustomerTM
     public TableView<CustomerTM> tblCustomer;
@@ -169,6 +160,7 @@ public class CustomerPageController implements Initializable {
 //                        )).toList()
 //        ));
 
+//        Layered
         tblCustomer.setItems(FXCollections.observableArrayList(
                 customerBO.getAllCustomer().stream().map(customerDTO ->
                         new CustomerTM(
@@ -184,7 +176,8 @@ public class CustomerPageController implements Initializable {
     }
 
     private void loadNextId() throws SQLException {
-        String nextId = customerModel.getNextId();
+//        String nextId = customerModel.getNextId();
+        String nextId = customerBO.getNextId();
         lblId.setText(nextId);
     }
 
@@ -452,7 +445,7 @@ public class CustomerPageController implements Initializable {
 
     public void genrateCustomerOrderReport(ActionEvent actionEvent) {
         CustomerTM selectedItem = tblCustomer.getSelectionModel().getSelectedItem();
-        if (customerModel == null) {
+        if (selectedItem == null) {
             return;
         }
 
@@ -471,6 +464,8 @@ public class CustomerPageController implements Initializable {
                     parameters, // null
                     connection
             );
+
+            JasperPrintManager.printReport(jasperPrint, true);
 
             JasperViewer.viewReport(jasperPrint, false);
 
@@ -493,7 +488,7 @@ public class CustomerPageController implements Initializable {
 
     public void btnSendMail(ActionEvent actionEvent) {
         CustomerTM selectedItem = tblCustomer.getSelectionModel().getSelectedItem();
-        if (customerModel == null) {
+        if (selectedItem == null) {
             return;
         }
 

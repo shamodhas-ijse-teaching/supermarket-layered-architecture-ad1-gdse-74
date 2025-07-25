@@ -26,7 +26,7 @@ public class OrderDetailDAOImpl implements OrderDetailsDAO {
     }
 
     @Override
-    public String getNextId() {
+    public String getLastId() {
         return "";
     }
 

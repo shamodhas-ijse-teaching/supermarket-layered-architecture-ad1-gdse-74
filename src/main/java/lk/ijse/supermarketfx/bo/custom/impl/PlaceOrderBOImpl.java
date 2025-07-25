@@ -1,14 +1,18 @@
 package lk.ijse.supermarketfx.bo.custom.impl;
 
 import lk.ijse.supermarketfx.bo.custom.PlaceOrderBO;
+import lk.ijse.supermarketfx.bo.exception.NotFoundException;
 import lk.ijse.supermarketfx.dao.DAOFactory;
 import lk.ijse.supermarketfx.dao.DAOTypes;
+import lk.ijse.supermarketfx.dao.custom.CustomerDAO;
 import lk.ijse.supermarketfx.dao.custom.ItemDAO;
 import lk.ijse.supermarketfx.dao.custom.OrderDAO;
 import lk.ijse.supermarketfx.dao.custom.OrderDetailsDAO;
 import lk.ijse.supermarketfx.db.DBConnection;
 import lk.ijse.supermarketfx.dto.OrderDTO;
 import lk.ijse.supermarketfx.dto.OrderDetailsDTO;
+import lk.ijse.supermarketfx.entity.Customer;
+import lk.ijse.supermarketfx.entity.Item;
 import lk.ijse.supermarketfx.entity.Order;
 import lk.ijse.supermarketfx.entity.OrderDetail;
 import lk.ijse.supermarketfx.util.CrudUtil;
@@ -18,6 +22,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * --------------------------------------------
@@ -36,12 +41,18 @@ public class PlaceOrderBOImpl implements PlaceOrderBO {
     private OrderDetailsDAO orderDetailsDAO =
             DAOFactory.getInstance().getDAO(DAOTypes.ORDER_DETAILS);
     private ItemDAO itemDAO = DAOFactory.getInstance().getDAO(DAOTypes.ITEM);
+    private CustomerDAO customerDAO = DAOFactory.getInstance().getDAO(DAOTypes.CUSTOMER);
 
     @Override
     public boolean placeOrder(OrderDTO dto) throws SQLException {
         Connection connection = DBConnection.getInstance().getConnection();
         try {
             connection.setAutoCommit(false);
+
+            Optional<Customer> optionalCustomer = customerDAO.findById(dto.getCustomerId());
+            if (optionalCustomer.isEmpty()) {
+                throw new NotFoundException("Customer not found");
+            }
 
             Order order = new Order();
             order.setId(dto.getOrderId());
@@ -67,6 +78,19 @@ public class PlaceOrderBOImpl implements PlaceOrderBO {
         }
     }
 
+    @Override
+    public String getNextId() throws SQLException {
+        String lastId = orderDAO.getLastId();
+        char tableChar = 'O';
+        if (lastId != null) {
+            String lastIdNumberString = lastId.substring(1);
+            int lastIdNumber = Integer.parseInt(lastIdNumberString);
+            int nextIdNumber = lastIdNumber + 1;
+            return String.format(tableChar + "%03d", nextIdNumber);
+        }
+        return tableChar + "001";
+    }
+
     private boolean saveDetailsAndUpdateItem(List<OrderDetailsDTO> detailsList) throws SQLException {
         //            for (int i = 1; i < detailsList.size() - 1; i++) {
 //                OrderDetailsDTO orderDetailsDTO = detailsList.get(i);
@@ -82,6 +106,21 @@ public class PlaceOrderBOImpl implements PlaceOrderBO {
 //                rollback
                 return false;
             }
+
+            Optional<Item> optionalItem = itemDAO.findById(detailsDTO.getItemId());
+            if (optionalItem.isEmpty()) {
+                throw new NotFoundException("Item not found");
+            }
+//            Item item = optionalItem.get();
+//            int oldQuantity = item.getQuantity();
+
+            // check quantity here
+
+//            int newQuantity = oldQuantity - detailsDTO.getQty();
+//
+//            item.setQuantity(newQuantity);
+//
+//            itemDAO.update(item);
             boolean isItemUpdated = itemDAO.reduceQuantity(
                     detailsDTO.getItemId(),
                     detailsDTO.getQty()

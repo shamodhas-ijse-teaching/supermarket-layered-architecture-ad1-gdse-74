@@ -17,6 +17,7 @@ import java.sql.SQLException;
  * Project: SupermarketFX
  * --------------------------------------------
  **/
+
 // This class contains utility methods for executing CRUD operations (Create, Read, Update, Delete) with the database.
 public class CrudUtil {
 

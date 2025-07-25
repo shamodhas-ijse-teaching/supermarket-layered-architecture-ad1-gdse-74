@@ -18,4 +18,6 @@ import java.sql.SQLException;
 
 public interface PlaceOrderBO extends SuperBO {
     boolean placeOrder(OrderDTO dto) throws SQLException;
+
+    String getNextId() throws SQLException;
 }
